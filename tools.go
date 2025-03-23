@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -173,6 +174,23 @@ func (t *Tools) CreateDirIfNotExist(path string) error {
 		}
 	}
 	return nil
+}
+
+// Slugify converts a string into a URL-friendly slug by replacing non-alphanumeric characters with hyphens and trimming excess hyphens.
+// Returns the slugified string or an error if the input results in an empty or invalid slug.
+func (t *Tools) Slugify(s string) (string, error) {
+	if s == "" {
+		return "", errors.New("empty string not allowed")
+	}
+
+	var re = regexp.MustCompile(`[^a-z\d]+`)
+
+	slug := strings.Trim(re.ReplaceAllString(strings.ToLower(s), "-"), "-")
+	if len(slug) == 0 {
+		return "", errors.New("after removing characters slug is zero length")
+	}
+
+	return slug, nil
 }
 
 //
