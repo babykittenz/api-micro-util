@@ -40,19 +40,23 @@ type UploadedFile struct {
 	FileSize         int64
 }
 
-func (t *Tools) UploadedOneFile(r *http.Request, uploadDir string, rename ...bool) (*UploadedFile, error) {
+// UploadOneFile uploads a single file from an HTTP request, saves it to the specified directory, and returns its information.
+func (t *Tools) UploadOneFile(r *http.Request, uploadDir string, rename ...bool) (*UploadedFile, error) {
 	renameFile := true
 	if len(rename) > 0 {
 		renameFile = rename[0]
 	}
-	files, err := t.UploadedFiles(r, uploadDir, renameFile)
+	files, err := t.UploadFiles(r, uploadDir, renameFile)
 	if err != nil {
 		return nil, err
 	}
 	return files[0], nil
 }
 
-func (t *Tools) UploadedFiles(r *http.Request, uploadDir string, rename ...bool) ([]*UploadedFile, error) {
+// UploadFiles processes and saves uploaded files from an HTTP request to the specified directory.
+// It optionally renames files with a random filename if `rename` is set to true.
+// Returns a slice of uploaded file information or an error if the operation fails.
+func (t *Tools) UploadFiles(r *http.Request, uploadDir string, rename ...bool) ([]*UploadedFile, error) {
 	renameFile := true
 	if len(rename) > 0 {
 		renameFile = rename[0]

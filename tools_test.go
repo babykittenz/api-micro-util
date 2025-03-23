@@ -73,7 +73,7 @@ func TestTools_UploadFiles(t *testing.T) {
 		var testTools Tools
 		testTools.AllowedFileTypes = e.allowedTypes
 
-		uploadedFiles, err := testTools.UploadedFiles(request, "./testdata/uploads/", e.renameFile)
+		uploadedFiles, err := testTools.UploadFiles(request, "./testdata/uploads/", e.renameFile)
 		if err != nil && !e.errorExpected {
 			t.Error(err)
 		}
@@ -132,7 +132,7 @@ func TestTools_UploadOneFile(t *testing.T) {
 
 		var testTools Tools
 
-		uploadedFile, err := testTools.UploadedOneFile(request, "./testdata/uploads/", true)
+		uploadedFile, err := testTools.UploadOneFile(request, "./testdata/uploads/", true)
 		if err != nil {
 			t.Error(err)
 		}
