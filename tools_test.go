@@ -16,6 +16,46 @@ import (
 	"testing"
 )
 
+// RoundTripFunc is a type that represents a function handling HTTP requests and returning HTTP responses.
+type RoundTripFunc func(req *http.Request) *http.Response
+
+// RoundTrip executes the RoundTripFunc to handle the given HTTP request and returns the corresponding HTTP response and error.
+func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
+	return f(req), nil
+}
+
+// NewTestClient creates a new instance of *http.Client using the provided RoundTripFunc as the transport layer.
+func NewTestClient(fn RoundTripFunc) *http.Client {
+	return &http.Client{
+		Transport: fn,
+	}
+}
+
+// TestTools_PushJSONToRemote tests the PushJSONToRemote function by sending JSON data to a remote URL using a mock client.
+// It verifies the response status code and ensures no errors occur during the process.
+func TestTools_PushJSONToRemote(t *testing.T) {
+	client := NewTestClient(func(req *http.Request) *http.Response {
+		//	test request parameters
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       io.NopCloser(bytes.NewBufferString(`{"foo": "bar"}`)),
+			Header:     make(http.Header),
+		}
+	})
+	var testTools Tools
+	var foo struct {
+		Bar string `json:"bar"`
+	}
+	foo.Bar = "bar"
+
+	_, _, err := testTools.PushJSONToRemote("http://example.com/some/path", foo, client)
+	if err != nil {
+		t.Error("Failed to call remote url", err)
+	}
+
+}
+
+// TestTools_RandomString tests the RandomString function by verifying its output length for a given input value.
 func TestTools_RandomString(t *testing.T) {
 	var testTools Tools
 	s := testTools.RandomString(10)
@@ -25,6 +65,7 @@ func TestTools_RandomString(t *testing.T) {
 	t.Log(s)
 }
 
+// uploadTests is a test table for file upload scenarios, specifying test name, allowed file types, renaming behavior, and error expectation.
 var uploadTests = []struct {
 	name          string
 	allowedTypes  []string
@@ -36,6 +77,7 @@ var uploadTests = []struct {
 	{name: "not allowed", allowedTypes: []string{"image/jpeg", "image/gif"}, renameFile: false, errorExpected: true},
 }
 
+// TestTools_UploadFiles tests the UploadFiles method by simulating different upload scenarios and validating expected outcomes.
 func TestTools_UploadFiles(t *testing.T) {
 	for _, e := range uploadTests {
 		// set up a pipe to avoid buffering
@@ -99,6 +141,7 @@ func TestTools_UploadFiles(t *testing.T) {
 	}
 }
 
+// TestTools_UploadOneFile is a test function to verify the behavior of the UploadOneFile method in various scenarios.
 func TestTools_UploadOneFile(t *testing.T) {
 	for _, e := range uploadTests {
 		// set up a pipe to avoid buffering
@@ -150,6 +193,7 @@ func TestTools_UploadOneFile(t *testing.T) {
 	}
 }
 
+// TestTools_CreateDirIfNotExist tests the CreateDirIfNotExist method by creating and removing a directory to ensure proper functionality.
 func TestTools_CreateDirIfNotExist(t *testing.T) {
 	var testTools Tools
 	err := testTools.CreateDirIfNotExist("./testdata/uploads")
@@ -176,6 +220,8 @@ var slugTests = []struct {
 	{"japanese string and roman characters", "こんにちは世界 hello world", "hello-world", false},
 }
 
+// TestTools_Slugify tests the Slugify method of the Tools type to ensure it converts strings to valid URL-friendly slugs.
+// It validates the correctness of slug generation against predefined test cases and checks for expected errors.
 func TestTools_Slugify(t *testing.T) {
 	var testTool Tools
 	for _, e := range slugTests {
@@ -191,6 +237,7 @@ func TestTools_Slugify(t *testing.T) {
 	}
 }
 
+// TestTools_DownloadStaticFile tests the DownloadStaticFile method by simulating an HTTP request and checking the response.
 func TestTools_DownloadStaticFile(t *testing.T) {
 	rr := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
@@ -215,6 +262,7 @@ func TestTools_DownloadStaticFile(t *testing.T) {
 	}
 }
 
+// jsonTests is a test dataset for validating JSON parsing behavior with various scenarios including errors and constraints.
 var jsonTests = []struct {
 	name          string
 	json          string
@@ -235,6 +283,7 @@ var jsonTests = []struct {
 	{"not json", "hello world", true, 1024, true},
 }
 
+// TestTools_ReadJSON verifies the behavior of the Tools.ReadJSON method with various JSON inputs, sizes, and configurations.
 func TestTools_ReadJSON(t *testing.T) {
 	var testTool Tools
 
@@ -275,6 +324,7 @@ func TestTools_ReadJSON(t *testing.T) {
 	}
 }
 
+// TestTools_WriteJSON tests the WriteJSON function to ensure it correctly writes a JSON response with headers and status code.
 func TestTools_WriteJSON(t *testing.T) {
 	var testTool Tools
 	rr := httptest.NewRecorder()
@@ -292,6 +342,7 @@ func TestTools_WriteJSON(t *testing.T) {
 	}
 }
 
+// TestTools_ErrorJSON tests the ErrorJSON method to ensure it returns the correct JSON error response and status code.
 func TestTools_ErrorJSON(t *testing.T) {
 	var testTool Tools
 	rr := httptest.NewRecorder()
