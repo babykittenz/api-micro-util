@@ -383,6 +383,12 @@ func TestEnvironmentVariables(t *testing.T) {
 // Look at your main.go for a function like initLambda or initialize
 // and test it like this (replace initLambda with your actual function name)
 func TestInitDDBFunction(t *testing.T) {
+
+	testDatabase := &Database{
+		DBName:      "DYNAMODB_TABLE_NAME",
+		Initialized: initialized,
+		Table:       tableName,
+	}
 	// Save original state
 	originalTableName := safeGetTableName()
 	originalInit := safeGetInitialized()
@@ -407,7 +413,7 @@ func TestInitDDBFunction(t *testing.T) {
 
 	// Call your initialization function
 	// Replace initLambda with your actual function name
-	err = InitDDBLambda(initialized, "DYNAMODB_TABLE_NAME", tableName, ddbClient)
+	err = testDatabase.InitDDBLambda(ddbClient)
 	if err != nil {
 		t.Fatalf("Failed to set environment variable: %v", err)
 	}
