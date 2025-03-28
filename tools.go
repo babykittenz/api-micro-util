@@ -2,10 +2,13 @@ package toolkit
 
 import (
 	"bytes"
+	"context"
 	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/config"
+	ddb "github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -337,37 +340,45 @@ func (t *Tools) PushJSONToRemote(uri string, data interface{}, client ...*http.C
 	return response, response.StatusCode, nil
 }
 
-//
-//// DynamoDBAPI is an interface defining methods for interacting with Amazon DynamoDB.
-//// It includes operations for retrieving, scanning, inserting, deleting, updating, and querying items.
-//type DynamoDBAPI interface {
-//	GetItem(ctx context.Context, params *ddb.GetItemInput, optFns ...func(*ddb.Options)) (*ddb.GetItemOutput, error)
-//	Scan(ctx context.Context, params *ddb.ScanInput, optFns ...func(*ddb.Options)) (*ddb.ScanOutput, error)
-//	PutItem(ctx context.Context, params *ddb.PutItemInput, optFns ...func(*ddb.Options)) (*ddb.PutItemOutput, error)
-//	DeleteItem(ctx context.Context, params *ddb.DeleteItemInput, optFns ...func(*ddb.Options)) (*ddb.DeleteItemOutput, error)
-//	UpdateItem(ctx context.Context, params *ddb.UpdateItemInput, optFns ...func(*ddb.Options)) (*ddb.UpdateItemOutput, error)
-//	Query(ctx context.Context, params *ddb.QueryInput, optFns ...func(*ddb.Options)) (*ddb.QueryOutput, error)
-//}
-//
-//// InitLambda initializes the AWS Lambda environment by setting up the DynamoDB client and required configurations.
-//func (t *Tools) InitLambda(initialized bool, tableName string, ddbClient DynamoDBAPI) error {
-//	if initialized {
-//		return nil
-//	}
-//
-//	// Get table name from environment
-//	tableName = os.Getenv("DYNAMODB_TABLE_NAME")
-//	if tableName == "" {
-//		return fmt.Errorf("DYNAMODB_TABLE_NAME environment variable not set")
-//	}
-//
-//	// Load AWS configuration and create a DynamoDB client
-//	cfg, err := config.LoadDefaultConfig(context.TODO())
-//	if err != nil {
-//		return fmt.Errorf("unable to load SDK config: %w", err)
-//	}
-//	ddbClient = ddb.NewFromConfig(cfg)
-//
-//	initialized = true
-//	return nil
-//}
+// Database TODO: need to create a repository pattern / adapter pattern
+type Database struct {
+	Initialized bool
+	DBName      string
+	Table       string
+}
+
+// DynamoDBAPI is an interface defining methods for interacting with Amazon DynamoDB.
+// It includes operations for retrieving, scanning, inserting, deleting, updating, and querying items.
+type DynamoDBAPI interface {
+	GetItem(ctx context.Context, params *ddb.GetItemInput, optFns ...func(*ddb.Options)) (*ddb.GetItemOutput, error)
+	Scan(ctx context.Context, params *ddb.ScanInput, optFns ...func(*ddb.Options)) (*ddb.ScanOutput, error)
+	PutItem(ctx context.Context, params *ddb.PutItemInput, optFns ...func(*ddb.Options)) (*ddb.PutItemOutput, error)
+	DeleteItem(ctx context.Context, params *ddb.DeleteItemInput, optFns ...func(*ddb.Options)) (*ddb.DeleteItemOutput, error)
+	UpdateItem(ctx context.Context, params *ddb.UpdateItemInput, optFns ...func(*ddb.Options)) (*ddb.UpdateItemOutput, error)
+	Query(ctx context.Context, params *ddb.QueryInput, optFns ...func(*ddb.Options)) (*ddb.QueryOutput, error)
+}
+
+// InitDDBLambda initializes the DynamoDB client and retrieves the table name from the environment if not already initialized.
+// It ensures the initialization is performed only once to avoid redundant operations.
+// Returns an error if the environment variable for the table name is not set or the AWS SDK configuration fails to load.
+func (d *Database) InitDDBLambda(ddbClient DynamoDBAPI) error {
+	if d.Initialized {
+		return nil
+	}
+
+	// Get table name from environment
+	d.Table = os.Getenv(d.DBName)
+	if d.Table == "" {
+		return fmt.Errorf("%s environment variable not set", d.DBName)
+	}
+
+	// Load AWS configuration and create a DynamoDB client
+	cfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		return fmt.Errorf("unable to load SDK config: %w", err)
+	}
+	ddbClient = ddb.NewFromConfig(cfg)
+
+	d.Initialized = true
+	return nil
+}

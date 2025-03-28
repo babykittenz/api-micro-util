@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"image"
 	"image/png"
 	"io"
@@ -364,5 +365,57 @@ func TestTools_ErrorJSON(t *testing.T) {
 
 	if rr.Code != http.StatusServiceUnavailable {
 		t.Errorf("wrong status code recieved: %d", rr.Code)
+	}
+}
+
+// Test environment variables
+func TestEnvironmentVariables(t *testing.T) {
+	setupTest(t)
+
+	// Test environment variable is set
+	tableName := os.Getenv("DYNAMODB_TABLE_NAME")
+	assert.Equal(t, "test-table", tableName)
+
+	// Test the table name is accessible
+	assert.Equal(t, "test-table", safeGetTableName())
+}
+
+// Look at your main.go for a function like initLambda or initialize
+// and test it like this (replace initLambda with your actual function name)
+func TestInitDDBFunction(t *testing.T) {
+	// Save original state
+	originalTableName := safeGetTableName()
+	originalInit := safeGetInitialized()
+	originalClient := safeGetDynamoDBClient()
+	defer func() {
+		// Restore original state after test
+		safeSetTableName(originalTableName)
+		safeSetInitialized(originalInit)
+		safeSetDynamoDBClient(originalClient)
+	}()
+
+	// Reset state
+	safeSetTableName("")
+	safeSetInitialized(false)
+	safeSetDynamoDBClient(nil)
+
+	// Set environment variable
+	err := os.Setenv("DYNAMODB_TABLE_NAME", "test-init-lambda")
+	if err != nil {
+		t.Fatalf("Failed to set environment variable: %v", err)
+	}
+
+	// Call your initialization function
+	// Replace initLambda with your actual function name
+	err = InitDDBLambda(initialized, "DYNAMODB_TABLE_NAME", tableName, ddbClient)
+	if err != nil {
+		t.Fatalf("Failed to set environment variable: %v", err)
+	}
+	assert.NoError(t, err)
+
+	// Reset environment variable
+	err = os.Setenv("DYNAMODB_TABLE_NAME", "test-table")
+	if err != nil {
+		t.Fatalf("Failed to set environment variable: %v", err)
 	}
 }
