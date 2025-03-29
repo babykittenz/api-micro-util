@@ -36,3 +36,11 @@ func (r *DynamoCompanyRepository) FindAll() ([]*models.Company, error) {
 func (r *DynamoCompanyRepository) Save(company *models.Company) error {
 	return nil
 }
+
+func (r *DynamoCompanyRepository) Update(company *models.Company) error {
+	return nil
+}
+
+func (r *DynamoCompanyRepository) Delete(id string) error {
+	return nil
+}
