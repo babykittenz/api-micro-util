@@ -6,38 +6,43 @@ import (
 	"github.com/babykittenz/api-micro-util/repository"
 )
 
-// DynamoLanguageRepository is a repository implementation for managing company data in DynamoDB.
+// LanguageDDBRepository is a repository implementation for managing company data in DynamoDB.
 // It utilizes a DynamoDB client and a specific table to perform CRUD operations on Language records.
 // The struct includes client for interaction with DynamoDB and tableName for specifying the target table.
-type DynamoLanguageRepository struct {
+type LanguageDDBRepository struct {
 	client    *dynamodb.Client
 	tableName string
 }
 
-func NewLanguageRepository(client *dynamodb.Client) repository.LanguageRepository {
-	return &DynamoLanguageRepository{
+// NewLanguageDDBRepository creates a new instance of LanguageDDBRepository with the given DynamoDB client and table name.
+func NewLanguageDDBRepository(client *dynamodb.Client) repository.LanguageRepository {
+	return &LanguageDDBRepository{
 		client:    client,
 		tableName: "languages",
 	}
 }
 
-// FindByID retrieves a company record from the DynamoDB table by its unique identifier.
-func (r *DynamoLanguageRepository) FindByID(id string) (*models.Language, error) {
+// FindByID retrieves a Language record by its unique identifier from the DynamoDB table. Returns the record or an error if not found.
+func (r *LanguageDDBRepository) FindByID(id string) (*models.Language, error) {
 	return nil, nil
 }
 
-func (r *DynamoLanguageRepository) FindAll() ([]*models.Language, error) {
+// FindAll retrieves all Language records from the DynamoDB table. Returns a slice of Language pointers or an error.
+func (r *LanguageDDBRepository) FindAll() ([]*models.Language, error) {
 	return nil, nil
 }
 
-func (r *DynamoLanguageRepository) Save(language *models.Language) error {
+// Save persists a Language record to the DynamoDB table. Returns an error if the operation fails.
+func (r *LanguageDDBRepository) Save(language *models.Language) error {
 	return nil
 }
 
-func (r *DynamoLanguageRepository) Update(language *models.Language) error {
+// Update updates an existing Language record in the DynamoDB table. Returns an error if the operation fails.
+func (r *LanguageDDBRepository) Update(language *models.Language) error {
 	return nil
 }
 
-func (r *DynamoLanguageRepository) Delete(id string) error {
+// Delete removes a Language record from the DynamoDB table by its unique identifier. Returns an error if the operation fails.
+func (r *LanguageDDBRepository) Delete(id string) error {
 	return nil
 }

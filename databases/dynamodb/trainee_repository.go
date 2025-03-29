@@ -6,95 +6,111 @@ import (
 	"github.com/babykittenz/api-micro-util/repository"
 )
 
-// DynamoTraineeRepository is a repository implementation for managing trainee data in DynamoDB.
+// TraineeDDBRepository is a repository implementation for managing trainee data in DynamoDB.
 // It utilizes a DynamoDB client and a specific table to perform CRUD operations on trainee records.
 // The struct includes client for interaction with DynamoDB and tableName for specifying the target table.
-type DynamoTraineeRepository struct {
+type TraineeDDBRepository struct {
 	client    *dynamodb.Client
 	tableName string
 }
 
-// NewTraineeRepository creates a new instance of a TraineeRepository using a DynamoDB client and a predefined table name.
-func NewTraineeRepository(client *dynamodb.Client) repository.TraineeRepository {
-	return &DynamoTraineeRepository{
+// NewTraineeDDBRepository creates a new instance of a TraineeRepository using a DynamoDB client and a predefined table name.
+func NewTraineeDDBRepository(client *dynamodb.Client) repository.TraineeRepository {
+	return &TraineeDDBRepository{
 		client:    client,
 		tableName: "trainees",
 	}
 }
 
 // FindByID retrieves a trainee record from DynamoDB based on the provided ID and returns a Trainee object or an error.
-func (r *DynamoTraineeRepository) FindByID(id string) (*models.Trainee, error) {
+func (r *TraineeDDBRepository) FindByID(id string) (*models.Trainee, error) {
 	return nil, nil
 }
 
 // FindByEmail retrieves a trainee record from DynamoDB based on the provided email and returns a Trainee object or an error.
-func (r *DynamoTraineeRepository) FindByEmail(email string) (*models.Trainee, error) {
+func (r *TraineeDDBRepository) FindByEmail(email string) (*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindByPhone(phone string) (*models.Trainee, error) {
+// FindByPhone retrieves a trainee record from DynamoDB based on the provided phone number and returns a Trainee object or an error.
+func (r *TraineeDDBRepository) FindByPhone(phone string) (*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindByPhoneAndLocation(phone string, locationID string) (*models.Trainee, error) {
+// FindByPhoneAndLocation retrieves a trainee record from DynamoDB based on the provided phone and location ID. Returns a Trainee object or error.
+func (r *TraineeDDBRepository) FindByPhoneAndLocation(phone string, locationID string) (*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindByEmailAndLocation(email string, locationID string) (*models.Trainee, error) {
+// FindByEmailAndLocation retrieves a trainee record from DynamoDB based on the provided email and location ID.
+// Returns a Trainee object or an error if no matching record is found.
+func (r *TraineeDDBRepository) FindByEmailAndLocation(email string, locationID string) (*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindByNames(firstName string, lastName string) (*models.Trainee, error) {
+// FindByNames retrieves a trainee record from DynamoDB based on the provided first and last names. Returns a Trainee object or error.
+func (r *TraineeDDBRepository) FindByNames(firstName string, lastName string) (*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindByNamesAndLocation(firstName string, lastName string, locationID string) (*models.Trainee, error) {
+// FindByNamesAndLocation retrieves a trainee record from DynamoDB using first name, last name, and location ID. Returns a Trainee object or an error.
+func (r *TraineeDDBRepository) FindByNamesAndLocation(firstName string, lastName string, locationID string) (*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindAll() ([]*models.Trainee, error) {
+// FindAll retrieves all trainee records from the DynamoDB table and returns a slice of Trainee objects or an error.
+func (r *TraineeDDBRepository) FindAll() ([]*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindAllByCompanyID(id string) ([]*models.Trainee, error) {
+// FindAllByCompanyID retrieves all trainee records associated with the given company ID from DynamoDB. Returns a slice of Trainee objects or an error.
+func (r *TraineeDDBRepository) FindAllByCompanyID(id string) ([]*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindAllByRegionID(id string) ([]*models.Trainee, error) {
+// FindAllByRegionID retrieves all trainee records associated with the specified region ID from DynamoDB.
+// Returns a slice of Trainee objects or an error if the operation fails.
+func (r *TraineeDDBRepository) FindAllByRegionID(id string) ([]*models.Trainee, error) {
 	return nil, nil
 }
 
-func (r *DynamoTraineeRepository) FindAllByLocationID(id string) ([]*models.Trainee, error) {
+// FindAllByLocationID retrieves all trainee records associated with the specified location ID from DynamoDB.
+// Returns a slice of Trainee objects or an error if the operation fails.
+func (r *TraineeDDBRepository) FindAllByLocationID(id string) ([]*models.Trainee, error) {
 	return nil, nil
 }
 
 // Save persists a trainee record to the DynamoDB table. Returns an error if the operation fails.
-func (r *DynamoTraineeRepository) Save(trainee *models.Trainee) error {
+func (r *TraineeDDBRepository) Save(trainee *models.Trainee) error {
 	return nil
 }
 
 // Update updates an existing trainee record in the DynamoDB table and returns an error if the operation fails.
-func (r *DynamoTraineeRepository) Update(trainee *models.Trainee) error {
+func (r *TraineeDDBRepository) Update(trainee *models.Trainee) error {
 	return nil
 }
 
 // Delete removes a trainee record from the DynamoDB table based on the provided ID and returns an error if the operation fails.
-func (r *DynamoTraineeRepository) Delete(id string) error {
+func (r *TraineeDDBRepository) Delete(id string) error {
 	return nil
 }
 
-func (r *DynamoTraineeRepository) DeleteByEmail(email string) error {
+// DeleteByEmail removes a trainee record from the DynamoDB table based on the provided email and returns an error if the operation fails.
+func (r *TraineeDDBRepository) DeleteByEmail(email string) error {
 	return nil
 }
 
-func (r *DynamoTraineeRepository) CompleteTraining(id string) error {
+// CompleteTraining marks the training session as complete for the trainee identified by the provided ID and returns an error if it fails.
+func (r *TraineeDDBRepository) CompleteTraining(id string) error {
 	return nil
 }
 
-func (r *DynamoTraineeRepository) Checkin(id string) error {
+// Checkin marks a trainee as checked in based on the provided ID and returns an error if the operation fails.
+func (r *TraineeDDBRepository) Checkin(id string) error {
 	return nil
 }
 
-func (r *DynamoTraineeRepository) Checkout(id string) error {
+// Checkout marks a trainee as checked out based on the provided ID and returns an error if the operation fails.
+func (r *TraineeDDBRepository) Checkout(id string) error {
 	return nil
 }

@@ -6,41 +6,43 @@ import (
 	"github.com/babykittenz/api-micro-util/repository"
 )
 
-// DynamoCompanyRepository is a repository implementation for managing company data in DynamoDB.
+// CompanyDDBRepository is a repository implementation for managing company data in DynamoDB.
 // It utilizes a DynamoDB client and a specific table to perform CRUD operations on company records.
 // The struct includes client for interaction with DynamoDB and tableName for specifying the target table.
-type DynamoCompanyRepository struct {
+type CompanyDDBRepository struct {
 	client    *dynamodb.Client
 	tableName string
 }
 
-// NewCompanyRepository creates a new instance of a CompanyRepository using a DynamoDB client and a predefined table name.
-func NewCompanyRepository(client *dynamodb.Client) repository.CompanyRepository {
-	return &DynamoCompanyRepository{
+// NewCompanyDDBRepository creates a new instance of a CompanyRepository using a DynamoDB client and a predefined table name.
+func NewCompanyDDBRepository(client *dynamodb.Client) repository.CompanyRepository {
+	return &CompanyDDBRepository{
 		client:    client,
 		tableName: "companies",
 	}
 }
 
-// FindByID retrieves a company record from the DynamoDB table by its unique identifier.
-func (r *DynamoCompanyRepository) FindByID(id string) (*models.Company, error) {
+// FindByID retrieves a company record from the DynamoDB table by its unique identifier and returns the result.
+func (r *CompanyDDBRepository) FindByID(id string) (*models.Company, error) {
 	return nil, nil
 }
 
-// FindAll retrieves all company records from the DynamoDB table.
-func (r *DynamoCompanyRepository) FindAll() ([]*models.Company, error) {
+// FindAll retrieves all company records from the DynamoDB table and returns them as a slice of Company pointers.
+func (r *CompanyDDBRepository) FindAll() ([]*models.Company, error) {
 	return nil, nil
 }
 
-// Save stores the given company instance into the DynamoDB table or updates it if it already exists.
-func (r *DynamoCompanyRepository) Save(company *models.Company) error {
+// Save stores or inserts the given company record into the DynamoDB table. Returns an error if the operation fails.
+func (r *CompanyDDBRepository) Save(company *models.Company) error {
 	return nil
 }
 
-func (r *DynamoCompanyRepository) Update(company *models.Company) error {
+// Update modifies an existing company record in the DynamoDB table and returns an error if the operation fails.
+func (r *CompanyDDBRepository) Update(company *models.Company) error {
 	return nil
 }
 
-func (r *DynamoCompanyRepository) Delete(id string) error {
+// Delete removes a company record from the DynamoDB table based on the provided unique identifier and returns an error if it fails.
+func (r *CompanyDDBRepository) Delete(id string) error {
 	return nil
 }

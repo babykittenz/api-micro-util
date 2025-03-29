@@ -6,46 +6,55 @@ import (
 	"github.com/babykittenz/api-micro-util/repository"
 )
 
-// DynamoLocationRepository is a repository implementation for managing company data in DynamoDB.
+// LocationDDBRepository is a repository implementation for managing company data in DynamoDB.
 // It utilizes a DynamoDB client and a specific table to perform CRUD operations on Location records.
 // The struct includes client for interaction with DynamoDB and tableName for specifying the target table.
-type DynamoLocationRepository struct {
+type LocationDDBRepository struct {
 	client    *dynamodb.Client
 	tableName string
 }
 
-func NewLocationRepository(client *dynamodb.Client) repository.LocationRepository {
-	return &DynamoLocationRepository{
+// NewLocationDDBRepository initializes a new LocationDDBRepository using a provided DynamoDB client.
+// It configures the repository to operate on the "locations" table.
+// Returns an implementation of the repository.LocationRepository interface.
+func NewLocationDDBRepository(client *dynamodb.Client) repository.LocationRepository {
+	return &LocationDDBRepository{
 		client:    client,
 		tableName: "locations",
 	}
 }
 
-// FindByID retrieves a company record from the DynamoDB table by its unique identifier.
-func (r *DynamoLocationRepository) FindByID(id string) (*models.Location, error) {
+// FindByID retrieves a Location record from the DynamoDB table using the specified ID. Returns the Location or an error.
+func (r *LocationDDBRepository) FindByID(id string) (*models.Location, error) {
 	return nil, nil
 }
 
-func (r *DynamoLocationRepository) FindAll() ([]*models.Location, error) {
+// FindAll retrieves all Location records from the DynamoDB table. Returns a slice of Location pointers or an error.
+func (r *LocationDDBRepository) FindAll() ([]*models.Location, error) {
 	return nil, nil
 }
 
-func (r *DynamoLocationRepository) FindAllByCompanyID(id string) ([]*models.Location, error) {
+// FindAllByCompanyID retrieves all Location records associated with the specified Company ID. Returns a slice of Location pointers or an error.
+func (r *LocationDDBRepository) FindAllByCompanyID(id string) ([]*models.Location, error) {
 	return nil, nil
 }
 
-func (r *DynamoLocationRepository) FindAllByRegionID(id string) ([]*models.Location, error) {
+// FindAllByRegionID retrieves all Location records associated with the specified Region ID. Returns a slice of Location pointers or an error.
+func (r *LocationDDBRepository) FindAllByRegionID(id string) ([]*models.Location, error) {
 	return nil, nil
 }
 
-func (r *DynamoLocationRepository) Save(location *models.Location) error {
+// Save stores or creates a new Location record in the DynamoDB table. Returns an error if the operation fails.
+func (r *LocationDDBRepository) Save(location *models.Location) error {
 	return nil
 }
 
-func (r *DynamoLocationRepository) Update(location *models.Location) error {
+// Update modifies an existing Location record in the DynamoDB table. Returns an error if the operation fails.
+func (r *LocationDDBRepository) Update(location *models.Location) error {
 	return nil
 }
 
-func (r *DynamoLocationRepository) Delete(id string) error {
+// Delete removes a Location record from the DynamoDB table using the specified ID. Returns an error if the operation fails.
+func (r *LocationDDBRepository) Delete(id string) error {
 	return nil
 }
