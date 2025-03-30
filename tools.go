@@ -17,6 +17,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const randomStringSource = "abcdefghijklmnopqrstubwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_+"
@@ -338,6 +339,11 @@ func (t *Tools) PushJSONToRemote(uri string, data interface{}, client ...*http.C
 
 	// send response back
 	return response, response.StatusCode, nil
+}
+
+// GetCurrentTimestamp returns the current timestamp in milliseconds since the Unix epoch.
+func (t *Tools) GetCurrentTimestamp() int64 {
+	return time.Now().UnixMilli()
 }
 
 // Database TODO: need to create a repository pattern / adapter pattern

@@ -22,8 +22,8 @@ func safeSetTableName(name string) {
 	tableName = name
 }
 
-// safeGetTableName gets the tableName with mutex protection
-func safeGetTableName() string {
+// SafeGetTableName gets the tableName with mutex protection
+func SafeGetTableName() string {
 	testMutex.RLock()
 	defer testMutex.RUnlock()
 
@@ -80,7 +80,7 @@ func ensureEnvironment(t *testing.T) {
 	}
 
 	t.Logf("Environment ensured: tableName=%q, env=%q, initialized=%v",
-		safeGetTableName(),
+		SafeGetTableName(),
 		os.Getenv("DYNAMODB_TABLE_NAME"),
 		safeGetInitialized())
 }

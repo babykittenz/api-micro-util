@@ -377,7 +377,7 @@ func TestEnvironmentVariables(t *testing.T) {
 	assert.Equal(t, "test-table", tableName)
 
 	// Test the table name is accessible
-	assert.Equal(t, "test-table", safeGetTableName())
+	assert.Equal(t, "test-table", SafeGetTableName())
 }
 
 // Look at your main.go for a function like initLambda or initialize
@@ -390,7 +390,7 @@ func TestInitDDBFunction(t *testing.T) {
 		Table:       tableName,
 	}
 	// Save original state
-	originalTableName := safeGetTableName()
+	originalTableName := SafeGetTableName()
 	originalInit := safeGetInitialized()
 	originalClient := safeGetDynamoDBClient()
 	defer func() {

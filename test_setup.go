@@ -38,7 +38,7 @@ func TestMain(m *testing.M) {
 	safeSetInitialized(true)
 
 	log.Printf("Test environment initialized: tableName=%s, ddbClient initialized=%v\n",
-		safeGetTableName(), safeGetDynamoDBClient() != nil)
+		SafeGetTableName(), safeGetDynamoDBClient() != nil)
 
 	// Add a small delay to ensure variables propagate
 	time.Sleep(50 * time.Millisecond)
@@ -53,11 +53,11 @@ func TestMain(m *testing.M) {
 // setupTest ensures test environment is properly set for each test
 func setupTest(t *testing.T) {
 	// Always set these variables for each test to ensure consistency
-	t.Logf("Setting up test environment... (current tableName: %q)", safeGetTableName())
+	t.Logf("Setting up test environment... (current tableName: %q)", SafeGetTableName())
 
 	// Force-set table name for every test
 	safeSetTableName("test-table")
-	t.Logf("Set tableName to %q", safeGetTableName())
+	t.Logf("Set tableName to %q", SafeGetTableName())
 
 	// Ensure environment variable is set
 	if os.Getenv("DYNAMODB_TABLE_NAME") != "test-table" {
@@ -79,7 +79,7 @@ func setupTest(t *testing.T) {
 	}
 
 	t.Logf("Test setup complete - tableName: %q, env: %q, initialized: %v",
-		safeGetTableName(),
+		SafeGetTableName(),
 		os.Getenv("DYNAMODB_TABLE_NAME"),
 		safeGetInitialized())
 }

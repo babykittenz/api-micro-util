@@ -16,10 +16,18 @@ type AutomaticTextMessageDDBRepository struct {
 
 // NewAutomaticTextMessageDDBRepository creates a new instance of AutomaticTextMessageDDBRepository using a DynamoDB client.
 func NewAutomaticTextMessageDDBRepository(client *dynamodb.Client) repository.AutomaticTextMessageRepository {
-	return &AutomaticTextMessageDDBRepository{
-		client:    client,
-		tableName: "automatic_text_messages",
+
+	if client != nil {
+		return &AutomaticTextMessageDDBRepository{
+			client:    client,
+			tableName: "automatic_text_messages",
+		}
+	} else {
+		return &testAutomaticTextMessageDDBRepository{
+			client: client,
+		}
 	}
+
 }
 
 // FindByID retrieves an AutomaticTextMessage record by its unique identifier from the DynamoDB table and returns it.

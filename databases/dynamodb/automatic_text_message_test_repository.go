@@ -3,17 +3,10 @@ package dynamodb
 import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/babykittenz/api-micro-util/models"
-	"github.com/babykittenz/api-micro-util/repository"
 )
 
 type testAutomaticTextMessageDDBRepository struct {
 	client *dynamodb.Client
-}
-
-func NewTestAutomaticTextMessageDDBRepository(client *dynamodb.Client) repository.AutomaticTextMessageRepository {
-	return &testAutomaticTextMessageDDBRepository{
-		client: nil,
-	}
 }
 
 // FindByID retrieves an AutomaticTextMessage record by its unique identifier from the DynamoDB table and returns it.

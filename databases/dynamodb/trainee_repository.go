@@ -1,7 +1,12 @@
 package dynamodb
 
 import (
+	"context"
+	"fmt"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/babykittenz/api-micro-util/models"
 	"github.com/babykittenz/api-micro-util/repository"
 )
@@ -24,7 +29,33 @@ func NewTraineeDDBRepository(client *dynamodb.Client) repository.TraineeReposito
 
 // FindByID retrieves a trainee record from DynamoDB based on the provided ID and returns a Trainee object or an error.
 func (r *TraineeDDBRepository) FindByID(id string) (*models.Trainee, error) {
-	return nil, nil
+	ctx := context.Background()
+
+	// Find the trainee by id
+	result, err := r.client.GetItem(ctx, &dynamodb.GetItemInput{
+		TableName: aws.String(r.tableName),
+		Key: map[string]types.AttributeValue{
+			"id": &types.AttributeValueMemberS{Value: id},
+		},
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get trainee from DynamoDB: %w", err)
+	}
+
+	// If no item found
+	if result.Item == nil {
+		return nil, fmt.Errorf("trainee with id %s not found", id)
+	}
+
+	// Unmarshal the DynamoDB item into a Trainee struct
+	var trainee models.Trainee
+	err = attributevalue.UnmarshalMap(result.Item, &trainee)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal trainee: %w", err)
+	}
+
+	return &trainee, nil
 }
 
 // FindByEmail retrieves a trainee record from DynamoDB based on the provided email and returns a Trainee object or an error.
