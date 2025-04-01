@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	toolkit "github.com/babykittenz/api-micro-util"
 	"github.com/babykittenz/api-micro-util/models"
 	"github.com/babykittenz/api-micro-util/repository"
 	"time"
@@ -22,10 +21,10 @@ type TraineeDDBRepository struct {
 }
 
 // NewTraineeDDBRepository creates a new instance of a TraineeRepository using a DynamoDB client and a predefined table name.
-func NewTraineeDDBRepository(client *dynamodb.Client) repository.TraineeRepository {
+func NewTraineeDDBRepository(client *dynamodb.Client, tableName string) repository.TraineeRepository {
 	return &TraineeDDBRepository{
 		client:    client,
-		tableName: toolkit.SafeGetTableName(),
+		tableName: tableName,
 	}
 }
 
