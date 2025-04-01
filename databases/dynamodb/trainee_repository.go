@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/babykittenz/api-micro-util/models"
 	"github.com/babykittenz/api-micro-util/repository"
+	"log"
 	"time"
 )
 
@@ -374,14 +375,35 @@ func (r *TraineeDDBRepository) FindAllByLocationID(id string) ([]*models.Trainee
 }
 
 // Save persists a trainee record to the DynamoDB table. Returns an error if the operation fails.
+// Save persists a trainee record to the DynamoDB table. Returns an error if the operation fails.
 func (r *TraineeDDBRepository) Save(trainee *models.Trainee) error {
 	ctx := context.Background()
+
+	// Check if ID is populated
+	if trainee.ID == "" {
+		return fmt.Errorf("cannot save trainee with empty ID")
+	}
+
+	// Log the trainee data being saved
+	log.Printf("Saving trainee: ID=%s, Name=%s %s", trainee.ID, trainee.FirstName, trainee.LastName)
 
 	// Marshal the trainee struct into a map of DynamoDB attribute values
 	item, err := attributevalue.MarshalMap(trainee)
 	if err != nil {
 		return fmt.Errorf("failed to marshal trainee: %w", err)
 	}
+
+	// Verify ID was properly marshaled - this is critical
+	if _, hasID := item["id"]; !hasID {
+		log.Printf("WARNING: ID field missing after marshaling, explicitly adding it")
+		item["id"] = &types.AttributeValueMemberS{Value: trainee.ID}
+	}
+
+	// Log the marshaled data
+	log.Printf("Marshaled item keys: %v", getMapKeys(item))
+
+	// Log the table name being used
+	log.Printf("Using DynamoDB table: %s", r.tableName)
 
 	// Create the PutItem input
 	input := &dynamodb.PutItemInput{
@@ -390,12 +412,25 @@ func (r *TraineeDDBRepository) Save(trainee *models.Trainee) error {
 	}
 
 	// Execute the PutItem operation
-	_, err = r.client.PutItem(ctx, input)
+	result, err := r.client.PutItem(ctx, input)
 	if err != nil {
+		// Log detailed error information
+		log.Printf("DynamoDB PutItem failed: %v", err)
 		return fmt.Errorf("failed to save trainee to DynamoDB: %w", err)
 	}
 
+	// Log success
+	log.Printf("Successfully saved trainee ID=%s to DynamoDB, result=%v", trainee.ID, result)
 	return nil
+}
+
+// Helper function to get map keys for logging
+func getMapKeys(m map[string]types.AttributeValue) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	return keys
 }
 
 // Update updates an existing trainee record in the DynamoDB table and returns an error if the operation fails.
