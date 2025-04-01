@@ -38,8 +38,8 @@ func safeSetDynamoDBClient(client DynamoDBAPI) {
 	ddbClient = client
 }
 
-// safeGetDynamoDBClient gets the DynamoDB client with mutex protection
-func safeGetDynamoDBClient() DynamoDBAPI {
+// SafeGetDynamoDBClient gets the DynamoDB client with mutex protection
+func SafeGetDynamoDBClient() DynamoDBAPI {
 	testMutex.RLock()
 	defer testMutex.RUnlock()
 
@@ -75,7 +75,7 @@ func ensureEnvironment(t *testing.T) {
 	safeSetInitialized(true)
 
 	// Only set ddbClient if it's nil
-	if safeGetDynamoDBClient() == nil {
+	if SafeGetDynamoDBClient() == nil {
 		safeSetDynamoDBClient(&MockDynamoDBClient{t: t})
 	}
 

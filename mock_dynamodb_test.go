@@ -11,13 +11,13 @@ import (
 
 // Test the mock implementation of GetItem
 func TestMockGetItem(t *testing.T) {
-	setupTest(t)
+	SetupTest(t)
 
 	// Create a context for the request
 	ctx := context.Background()
 
 	// Get the mock client
-	client := safeGetDynamoDBClient().(*MockDynamoDBClient)
+	client := SafeGetDynamoDBClient().(*MockDynamoDBClient)
 
 	// Create params for an existing trainee
 	params := &ddb.GetItemInput{

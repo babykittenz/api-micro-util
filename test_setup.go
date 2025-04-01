@@ -38,7 +38,7 @@ func TestMain(m *testing.M) {
 	safeSetInitialized(true)
 
 	log.Printf("Test environment initialized: tableName=%s, ddbClient initialized=%v\n",
-		SafeGetTableName(), safeGetDynamoDBClient() != nil)
+		SafeGetTableName(), SafeGetDynamoDBClient() != nil)
 
 	// Add a small delay to ensure variables propagate
 	time.Sleep(50 * time.Millisecond)
@@ -50,8 +50,8 @@ func TestMain(m *testing.M) {
 	os.Exit(exitCode)
 }
 
-// setupTest ensures test environment is properly set for each test
-func setupTest(t *testing.T) {
+// SetupTest ensures test environment is properly set for each test
+func SetupTest(t *testing.T) {
 	// Always set these variables for each test to ensure consistency
 	t.Logf("Setting up test environment... (current tableName: %q)", SafeGetTableName())
 
@@ -73,7 +73,7 @@ func setupTest(t *testing.T) {
 		safeSetInitialized(true)
 	}
 
-	if safeGetDynamoDBClient() == nil {
+	if SafeGetDynamoDBClient() == nil {
 		t.Log("Creating mock DynamoDB client")
 		safeSetDynamoDBClient(&MockDynamoDBClient{t: t})
 	}

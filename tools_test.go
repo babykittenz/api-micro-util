@@ -370,7 +370,7 @@ func TestTools_ErrorJSON(t *testing.T) {
 
 // Test environment variables
 func TestEnvironmentVariables(t *testing.T) {
-	setupTest(t)
+	SetupTest(t)
 
 	// Test environment variable is set
 	tableName := os.Getenv("DYNAMODB_TABLE_NAME")
@@ -392,7 +392,7 @@ func TestInitDDBFunction(t *testing.T) {
 	// Save original state
 	originalTableName := SafeGetTableName()
 	originalInit := safeGetInitialized()
-	originalClient := safeGetDynamoDBClient()
+	originalClient := SafeGetDynamoDBClient()
 	defer func() {
 		// Restore original state after test
 		safeSetTableName(originalTableName)

@@ -36,7 +36,6 @@ type Trainee struct {
 	LocationID            string `json:"location_id"`
 	RegionID              string `json:"region_id"`
 	CheckedIn             bool   `json:"checked_in"`
-	CheckinID             string `json:"checkin_id"`
 }
 
 // Training represents a record of a training session completed by a trainee.

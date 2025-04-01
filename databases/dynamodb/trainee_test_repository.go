@@ -15,12 +15,12 @@ import (
 )
 
 type testTraineeDDBRepository struct {
-	client    *dynamodb.Client
+	client    *toolkit.MockDynamoDBClient
 	tableName string
 	tools     *toolkit.Tools
 }
 
-func NewTestTraineeDDBRepository(client *dynamodb.Client) repository.TraineeRepository {
+func NewTestTraineeDDBRepository(client *toolkit.MockDynamoDBClient) repository.TraineeRepository {
 	return &testTraineeDDBRepository{
 		client:    client,
 		tableName: toolkit.SafeGetTableName(),
@@ -30,6 +30,7 @@ func NewTestTraineeDDBRepository(client *dynamodb.Client) repository.TraineeRepo
 
 // FindByID retrieves a trainee record from DynamoDB based on the provided ID
 func (r *testTraineeDDBRepository) FindByID(id string) (*models.Trainee, error) {
+	// TODO: move context to test setup not called every function
 	ctx := context.Background()
 
 	// Find the trainee by id
@@ -475,7 +476,6 @@ func (r *testTraineeDDBRepository) Checkin(id string) error {
 
 	// Set the checked in status
 	trainee.CheckedIn = true
-	trainee.CheckinID = fmt.Sprintf("checkin-%s-%d", id, r.tools.GetCurrentTimestamp())
 
 	// Save the updated trainee
 	return r.Save(trainee)
