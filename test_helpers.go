@@ -26,25 +26,34 @@ func safeSetTableName(name string) {
 // SafeGetTableName gets the tableName with mutex protection
 func SafeGetTableName() string {
 	// Try to get the environment-specific table name
-	env := os.Getenv("ENVIRONMENT") // This could be "dev", "staging", "prod"
+	env := os.Getenv("ENVIRONMENT")
 	if env == "" {
 		env = "dev" // Default to dev if not specified
 	}
 
 	// Get the base table name
-	baseTableName := os.Getenv("DYNAMODB_TABLE_NAME")
+	baseTableNameEnv := os.Getenv("DYNAMODB_TABLE_NAME")
+	baseTableName := baseTableNameEnv // Store the original value from env
+
+	log.Printf("DEBUGGING - Raw env DYNAMODB_TABLE_NAME: %q", baseTableNameEnv)
+
+	// Check if baseTableName is being modified from somewhere else
+	if baseTableName != baseTableNameEnv {
+		log.Printf("WARNING - baseTableName was changed from %q to %q", baseTableNameEnv, baseTableName)
+	}
+
 	if baseTableName == "" {
 		baseTableName = "trainees" // Fallback to a default
+		log.Printf("DEBUGGING - Using fallback value 'trainees' for empty baseTableName")
 	}
 
 	// For dev and staging, append the environment to avoid collision
-	// For prod, use the clean name (or you could still append if preferred)
 	tableName := baseTableName
 	if env != "prod" {
 		tableName = fmt.Sprintf("%s_%s", baseTableName, env)
 	}
 
-	log.Printf("Using DynamoDB table: %s for environment: %s", tableName, env)
+	log.Printf("DEBUGGING - Final tableName: %q from baseTableName: %q and env: %q", tableName, baseTableName, env)
 	return tableName
 }
 
