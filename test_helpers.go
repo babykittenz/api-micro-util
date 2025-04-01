@@ -1,6 +1,7 @@
 package toolkit
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -24,9 +25,26 @@ func safeSetTableName(name string) {
 
 // SafeGetTableName gets the tableName with mutex protection
 func SafeGetTableName() string {
-	testMutex.RLock()
-	defer testMutex.RUnlock()
+	// Try to get the environment-specific table name
+	env := os.Getenv("ENVIRONMENT") // This could be "dev", "staging", "prod"
+	if env == "" {
+		env = "dev" // Default to dev if not specified
+	}
 
+	// Get the base table name
+	baseTableName := os.Getenv("DYNAMODB_TABLE_NAME")
+	if baseTableName == "" {
+		baseTableName = "trainees" // Fallback to a default
+	}
+
+	// For dev and staging, append the environment to avoid collision
+	// For prod, use the clean name (or you could still append if preferred)
+	tableName := baseTableName
+	if env != "prod" {
+		tableName = fmt.Sprintf("%s_%s", baseTableName, env)
+	}
+
+	log.Printf("Using DynamoDB table: %s for environment: %s", tableName, env)
 	return tableName
 }
 
