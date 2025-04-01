@@ -34,7 +34,7 @@ func SafeGetTableName() string {
 	// Get the base table name
 	baseTableNameEnv := os.Getenv("DYNAMODB_TABLE_NAME")
 	baseTableName := baseTableNameEnv // Store the original value from env
-
+	// let this be 1.0.24
 	log.Printf("DEBUGGING - Raw env DYNAMODB_TABLE_NAME: %q", baseTableNameEnv)
 
 	// Check if baseTableName is being modified from somewhere else
